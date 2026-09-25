@@ -359,7 +359,6 @@ public class CrashPlayerController : MonoBehaviour
             }
         }
         
-        // --- NEW: Calculate Input-Based Speed for Animation ---
         float actualHorizontalSpeed = move.magnitude * targetSpeed;
 
         // --- IDLE TIMER LOGIC ---
@@ -544,37 +543,27 @@ public class CrashPlayerController : MonoBehaviour
 
     public void Teleport(Vector3 targetPosition)
     {
-    // 1. Disable controller so it doesn't block the movement
+    
     if (controller != null) controller.enabled = false;
-    
-    // 2. Move the player
     transform.position = targetPosition;
-    
-    // 3. Reset internal physics states
     ResetState();
-    
-    // 4. Re-enable controller
     if (controller != null) controller.enabled = true;
     }
 
     public void Die()
-{
-    // 1. Take away control
-    enabled = false;
-
-    // 2. Stop velocities and active abilities
-    velocity = Vector3.zero;
-    if (spinEffect != null) spinEffect.SetActive(false);
-    if (slamTrigger != null) slamTrigger.gameObject.SetActive(false);
-
-    // 3. Play death animation
-    if (animator != null)
     {
-        animator.SetFloat("Speed", 0);
-        animator.SetBool("IsGroundPounding", false);
-        animator.SetBool("IsRecovering", false);
-        animator.SetTrigger("Dead");
-    }
+        enabled = false;
+        velocity = Vector3.zero;
+        if (spinEffect != null) spinEffect.SetActive(false);
+        if (slamTrigger != null) slamTrigger.gameObject.SetActive(false);
+    
+        if (animator != null)
+        {
+            animator.SetFloat("Speed", 0);
+            animator.SetBool("IsGroundPounding", false);
+            animator.SetBool("IsRecovering", false);
+            animator.SetTrigger("Dead");
+        }
     }
 
     public void EnableControls()
