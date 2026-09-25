@@ -1,6 +1,6 @@
 using UnityEngine;
 using TMPro;
-using UnityEngine.UI; // Added for Image
+using UnityEngine.UI; 
 using System.Collections;
 
 public class LoadingScreenUI : MonoBehaviour
@@ -9,7 +9,7 @@ public class LoadingScreenUI : MonoBehaviour
     public CanvasGroup canvasGroup;
     public TextMeshProUGUI loadingText;
     public RectTransform spinnerIcon;
-    public Image loadingBar; // Drag your bar image here
+    public Image loadingBar; 
 
     [Header("Settings")]
     public float fadeSpeed = 2f;
@@ -48,7 +48,6 @@ public class LoadingScreenUI : MonoBehaviour
     {
         if (loadingBar != null)
         {
-            // This ensures the fill is smooth
             loadingBar.fillAmount = progress;
         }
     }
