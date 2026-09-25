@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class LevelGoal : MonoBehaviour
 {
-    public bool isFinalGameGoal = false; // Check this ONLY on the boss level goal
+    public bool isFinalGameGoal = false; // Check αυτο MONO στο FinalBoss
 
     private void OnTriggerEnter(Collider other)
     {
