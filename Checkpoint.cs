@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.Audio;
-using TMPro; // Added for TextMeshPro support
+using TMPro; 
 
 public class Checkpoint : MonoBehaviour
 {
@@ -8,7 +8,7 @@ public class Checkpoint : MonoBehaviour
     public Animator animator;
     public ParticleSystem particles;
     public AudioClip activateSound;
-    public TextMeshPro checkpointLabel; // Drag your Text object here
+    public TextMeshPro checkpointLabel; 
 
     [Tooltip("Drag an AudioClip OR an Audio Random Container here")]
     public Object loopSound;
@@ -45,7 +45,7 @@ public class Checkpoint : MonoBehaviour
     {
         isActive = true;
         
-        // 1. Update the Text
+        
         if (checkpointLabel != null)
         {
             checkpointLabel.text = reachedText;
