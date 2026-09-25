@@ -17,30 +17,30 @@ public class BearEnemyAI : MonoBehaviour, IResettable
     [Header("Detection Settings")]
     public float viewDistance = 10f;
     [Range(0, 360)] public float viewAngle = 90f;
-    public float proximityRadius = 2.5f; // Circle detection around the bear
-    public LayerMask obstacleMask;       // Layers that block vision (e.g., Default, Environment)
+    public float proximityRadius = 2.5f; 
+    public LayerMask obstacleMask;       
 
     [Header("Aggro & Chase Settings")]
     public float chaseSpeed = 5.5f;
-    public float loseAggroDistance = 15f; // Player must exceed this distance to lose aggro
+    public float loseAggroDistance = 15f; 
 
     [Header("Attack Settings")]
     public float attackRange = 2.0f;
-    public float attackCooldown = 2.0f;   // Time to wait between attacks (recharge)
-    public BearWeapon weaponScript;       // Reference to the weapon script on the bear's hand
+    public float attackCooldown = 2.0f;   
+    public BearWeapon weaponScript;       
 
     [Header("Audio Settings")]
-    public AudioClip[] randomIdleSounds;  // Sounds played randomly while patrolling/idle
+    public AudioClip[] randomIdleSounds;  
     public float minIdleSoundInterval = 5f;
     public float maxIdleSoundInterval = 12f;
-    public AudioClip spotPlayerSound;     // Sound played when the bear sees/detects the player
-    public AudioClip attackSound;         // Sound played when the bear swings/attacks
-    public AudioClip deathSound;          // Sound played when the bear dies
+    public AudioClip spotPlayerSound;     
+    public AudioClip attackSound;         
+    public AudioClip deathSound;          
 
     [Header("Footstep Audio Settings")]
-    public AudioClip[] footstepSounds;    // Array of footstep audio clips
-    public float walkFootstepInterval = 0.5f; // Time between footsteps when walking
-    public float runFootstepInterval = 0.3f;  // Time between footsteps when running
+    public AudioClip[] footstepSounds;    
+    public float walkFootstepInterval = 0.5f; 
+    public float runFootstepInterval = 0.3f;  
 
     [Header("Target")]
     public Transform player;
@@ -81,34 +81,31 @@ public class BearEnemyAI : MonoBehaviour, IResettable
     public void LoadState(object state)
     {
         BearState s = (BearState)state;
-        StopAllCoroutines(); // Stops any active sinking/shrinking
+        StopAllCoroutines(); 
         isAttacking = false;
 
         gameObject.SetActive(s.isActive);
         isDead = s.isDead;
         
-        // Reset Physics & Colliders first
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb != null) { rb.isKinematic = true; rb.useGravity = true; }
         foreach (var col in GetComponentsInChildren<Collider>()) col.enabled = true;
 
-        // Reset Scale
         transform.localScale = (initialScale != Vector3.zero) ? initialScale : Vector3.one;
 
         if (agent != null)
         {
-            agent.enabled = false; // Disable to allow manual positioning
+            agent.enabled = false; 
             
             if (s.isActive && !isDead)
             {
-                // SAFETY: Find the closest valid NavMesh point (avoids underground errors)
+                // Σαφετης:Βρες ενα σημειο στο navmesh για τα ερρορ
                 if (NavMesh.SamplePosition(s.position, out NavMeshHit hit, 5.0f, NavMesh.AllAreas))
                 {
                     transform.position = hit.position;
                     transform.rotation = s.rotation;
-                    agent.enabled = true; // Re-enable once on valid floor
+                    agent.enabled = true; 
                     
-                    // Only start AI if the agent successfully enabled
                     if (agent.isOnNavMesh)
                     {
                         agent.Warp(hit.position);
@@ -117,7 +114,7 @@ public class BearEnemyAI : MonoBehaviour, IResettable
                 }
                 else
                 {
-                    // If we absolutely can't find a NavMesh, keep it disabled to prevent crashing
+                    // αν δεν μπορει να βρει σημειο κλειστο γιατι κρασαρει το γκειμ 
                     transform.position = s.position;
                     Debug.LogWarning($"[BearAI] {gameObject.name} could not find NavMesh at {s.position}. AI Disabled.");
                 }
@@ -380,14 +377,12 @@ public class BearEnemyAI : MonoBehaviour, IResettable
         if (isDead) return;
         isDead = true;
 
-        // 1. Disable navigation immediately
         if (agent != null) 
         {
             agent.isStopped = true;
             agent.enabled = false;
         }
 
-        // 2. Disable Physics to prevent "infinite position" errors during shrinking
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb != null) 
         {
@@ -395,7 +390,6 @@ public class BearEnemyAI : MonoBehaviour, IResettable
             rb.useGravity = false;
         }
 
-        // 3. Disable all colliders so the bear sinks through the floor
         foreach (var col in GetComponentsInChildren<Collider>()) 
         {
             col.enabled = false;
@@ -403,16 +397,13 @@ public class BearEnemyAI : MonoBehaviour, IResettable
 
         PlayDeathSound();
         
-        // 4. Trigger the death animation
         if (anim != null) anim.SetTrigger("Die");
 
-        // 5. Start the smooth shrink and sink transition
         StartCoroutine(DeactivateAfterDelay(3.5f));
     }
 
     private IEnumerator DeactivateAfterDelay(float delay)
     {
-    // Wait for most of the death animation to finish
     yield return new WaitForSeconds(delay * 0.5f);
 
     float elapsed = 0f;
@@ -422,10 +413,8 @@ public class BearEnemyAI : MonoBehaviour, IResettable
     {
         elapsed += Time.deltaTime;
         float t = elapsed / duration;
-
-        // Shrink the monster
+        //ο χειροτερος τροπος να κανεις despawn εχθρους, εχει γαμηθει το navmesh
         transform.localScale = Vector3.Lerp(initialScale, Vector3.zero, t);
-        // Sink it into the ground
         transform.position += Vector3.down * Time.deltaTime * 0.5f;
 
         yield return null;
