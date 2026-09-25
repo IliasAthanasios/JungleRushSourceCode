@@ -30,19 +30,15 @@ public class MonsterProjectile : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // 1. Ignore the shooter AND all its children (branches, trunk, etc.)
         if (owner != null && (other.gameObject == owner || other.transform.IsChildOf(owner.transform)))
             return;
 
-        // 2. Ignore other projectiles
         if (other.GetComponent<MonsterProjectile>() != null)
             return;
 
-        // 3. Ignore triggers (like the detection range triggers)
         if (other.isTrigger) 
             return;
 
-        // 4. Damage player or hit wall
         if (other.CompareTag("Player"))
         {
             if (GameManager.Instance != null) GameManager.Instance.LoseLife();
@@ -50,7 +46,6 @@ public class MonsterProjectile : MonoBehaviour
         }
         else
         {
-            // Hits ground, walls, or obstacles
             Explode();
         }
     }
