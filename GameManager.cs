@@ -43,7 +43,6 @@ public class GameManager : MonoBehaviour
     private static Vector3 lastCheckpointPosition;
     private static bool hasCheckpoint = false;
 
-    // Public property required by other scripts
     public bool IsGameOver => isGameOver;
     private bool isGameOver = false;
     private bool isDying = false;
@@ -67,7 +66,6 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        // Start every scene with a black fade-in for smoothness
         if (ScreenFader.Instance != null)
         {
             ScreenFader.Instance.SetAlpha(1f);
@@ -94,7 +92,7 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator InitialFadeIn()
     {
-        yield return new WaitForSeconds(0.2f); // Stabilization wait
+        yield return new WaitForSeconds(0.2f); 
         yield return StartCoroutine(ScreenFader.Instance.FadeFromBlack(fadeInDuration));
     }
 
@@ -137,22 +135,17 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator DeathAndRespawnRoutine(CrashPlayerController player)
     {
-        // 1. Death animation plays
         yield return new WaitForSeconds(deathAnimDuration);
 
-        // 2. Screen fades to black
         if (ScreenFader.Instance != null)
             yield return StartCoroutine(ScreenFader.Instance.FadeToBlack(fadeOutDuration));
         else
             yield return new WaitForSeconds(fadeOutDuration);
 
-        // --- WHILE SCREEN IS BLACK ---
 
-        // 3. Reset enemies and collectibles
         if (CheckpointStateManager.Instance != null)
             CheckpointStateManager.Instance.RestoreSnapshot();
 
-        // 4. Teleport player to checkpoint
         if (player != null)
         {
             player.Teleport(lastCheckpointPosition);
@@ -160,10 +153,8 @@ public class GameManager : MonoBehaviour
             if (anim != null) { anim.Rebind(); anim.Play("Idle 0", 0, 0); }
         }
 
-        // 5. Wait for physics and music to kick in
         yield return new WaitForSeconds(0.3f);
 
-        // 6. Fade out from black and continue
         if (ScreenFader.Instance != null)
             yield return StartCoroutine(ScreenFader.Instance.FadeFromBlack(fadeInDuration));
 
@@ -226,7 +217,6 @@ public class GameManager : MonoBehaviour
         StartCoroutine(LoadSceneRoutine("MainMenu"));
     }
 
-    // Required by LevelGoal script
     public void WinGame()
     {   
         if (isGameOver) return;
@@ -235,10 +225,8 @@ public class GameManager : MonoBehaviour
     }
     public void FinishGame()
     {
-    // Set the flag so the Main Menu knows to open credits
     MainMenuController.showCreditsOnLoad = true;
     
-    // Load the Main Menu
     SceneManager.LoadScene("MainMenu");
     }
 
