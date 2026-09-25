@@ -92,7 +92,7 @@ public class TreeMonsterAI : MonoBehaviour, IResettable
         if (initialScale != Vector3.zero) 
         transform.localScale = initialScale; 
         else 
-        transform.localScale = Vector3.one; // Fallback         transform.localScale = (initialScale != Vector3.zero) ? initialScale : new Vector3(3, 3, 3);
+        transform.localScale = Vector3.one; 
     }
 
     void Awake()
@@ -173,11 +173,9 @@ public class TreeMonsterAI : MonoBehaviour, IResettable
         if (isDead) return;
         isDead = true;
 
-        // 1. Stop audio and particles
         if (idleSource != null) idleSource.Stop();
         if (deathEffect != null) Instantiate(deathEffect, transform.position + Vector3.up, Quaternion.identity);
 
-        // 2. Disable Physics and Collisions
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb != null) 
         {
@@ -192,16 +190,13 @@ public class TreeMonsterAI : MonoBehaviour, IResettable
 
         if (sfxSource && deathSound) sfxSource.PlayOneShot(deathSound);
 
-        // 3. Trigger the death animation (note the trigger name is "dead")
         if (animator != null) animator.SetTrigger("dead");
         
-        // 4. Start the smooth shrink and sink transition
         StartCoroutine(DeactivateAfterDelay(2.5f));
     }
 
     private IEnumerator DeactivateAfterDelay(float delay)
     {
-        // Wait for most of the death animation to finish
         yield return new WaitForSeconds(delay * 0.5f);
 
         float elapsed = 0f;
@@ -212,9 +207,7 @@ public class TreeMonsterAI : MonoBehaviour, IResettable
             elapsed += Time.deltaTime;
             float t = elapsed / duration;
 
-            // Shrink the monster
             transform.localScale = Vector3.Lerp(initialScale, Vector3.zero, t);
-            // Sink it into the ground
             transform.position += Vector3.down * Time.deltaTime * 0.5f;
 
             yield return null;
