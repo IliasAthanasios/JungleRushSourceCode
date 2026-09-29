@@ -8,7 +8,7 @@ public class ShieldBanana : MonoBehaviour
     public AudioClip collectSound;
     public AudioClip shieldPowerupSound;
 
-    private bool isCollected = false; // The gate
+    private bool isCollected = false; 
 
     private void OnTriggerEnter(Collider other)
     {
