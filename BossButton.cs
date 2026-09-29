@@ -12,7 +12,7 @@ public class BossButton : MonoBehaviour
     public Transform pressedArea;
     public Renderer buttonRenderer;
     public Color activatedColor = Color.green;
-    public Vector3 pressedOffset = new Vector3(0, -0.3f, 0); // Moves slightly "inwards"
+    public Vector3 pressedOffset = new Vector3(0, -0.3f, 0); 
 
     private Vector3 originalLocalPos;
     private Color originalColor;
@@ -20,7 +20,6 @@ public class BossButton : MonoBehaviour
 
     void Awake()
     {
-        // Auto-find the child object if not assigned
         if (pressedArea == null) pressedArea = transform.Find("Button_Object");
 
         if (pressedArea != null)
@@ -39,22 +38,18 @@ public class BossButton : MonoBehaviour
         if (isPressed) return;
         isPressed = true;
 
-        // 1. Manual Animation: Move the child object inwards
         if (pressedArea != null)
         {
             pressedArea.localPosition = originalLocalPos + pressedOffset;
         }
 
-        // 2. Play Hit Sound
         if (hitSound != null && audioSource != null)
         {
             audioSource.PlayOneShot(hitSound);
         }
 
-        // 3. Visual Feedback: Turn Green and Glow
         if (buttonRenderer != null)
         {
-            // Use sharedMaterials if in Editor, materials if in Play Mode
             var mats = Application.isPlaying ? buttonRenderer.materials : buttonRenderer.sharedMaterials;
             foreach (var mat in mats)
             {
@@ -64,7 +59,6 @@ public class BossButton : MonoBehaviour
             }
         }
 
-        // 4. Notify Arena Manager
         if (ArenaManager.Instance != null)
         {
             ArenaManager.Instance.OnButtonActivated();
