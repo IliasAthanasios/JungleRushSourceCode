@@ -5,7 +5,7 @@ using Unity.Cinemachine;
 public class CutsceneTrigger : MonoBehaviour
 {
     [Header("Settings")]
-    public bool playOnStart = true; // Set this to TRUE in the Inspector
+    public bool playOnStart = true; 
     public CinemachineCamera cutsceneCamera;
     public float cutsceneDuration = 5f;
 
@@ -17,7 +17,6 @@ public class CutsceneTrigger : MonoBehaviour
 
     private void Start()
     {
-        // Removed PlayerPrefs check so it plays every time the scene loads
         if (playOnStart && !hasPlayed)
         {
             GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -27,7 +26,6 @@ public class CutsceneTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // hasPlayed prevents it from triggering again if the player walks back into it
         if (!hasPlayed && other.CompareTag("Player"))
         {
             StartCoroutine(PlayCutscene(other.gameObject));
@@ -36,7 +34,7 @@ public class CutsceneTrigger : MonoBehaviour
 
     public IEnumerator PlayCutscene(GameObject player)
     {
-        if (hasPlayed) yield break; // Safety check
+        if (hasPlayed) yield break; 
         hasPlayed = true;
 
         var controller = player.GetComponent<CrashPlayerController>();
@@ -56,7 +54,6 @@ public class CutsceneTrigger : MonoBehaviour
 
         if (controller != null) controller.enabled = true;
         
-        // Deactivate the trigger object so it can't be hit again
         gameObject.SetActive(false);
     }
 }
