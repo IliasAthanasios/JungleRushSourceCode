@@ -8,7 +8,6 @@ public class BananaCollectible : MonoBehaviour, IResettable
 
     private bool isCollected = false;
 
-    // --- State Logic ---
     public object SaveState() => gameObject.activeSelf;
     public void LoadState(object state)
     {
@@ -31,6 +30,6 @@ public class BananaCollectible : MonoBehaviour, IResettable
 
         if (collectEffect != null) Instantiate(collectEffect, transform.position, Quaternion.identity);
         
-        gameObject.SetActive(false); // DON'T DESTROY
+        gameObject.SetActive(false); 
     }
 }
