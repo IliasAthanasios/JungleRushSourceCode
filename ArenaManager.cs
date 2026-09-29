@@ -8,7 +8,7 @@ public class ArenaManager : MonoBehaviour
     private int activatedCount = 0;
 
     public GameObject laserObject;
-    public AudioSource audioSource; // Used for the one-time activation sound
+    public AudioSource audioSource; 
     public AudioClip activationSound;
 
     void Awake()
@@ -37,7 +37,6 @@ public class ArenaManager : MonoBehaviour
         if (laserLoop != null) laserLoop.Stop();
     }
     
-    // Find all buttons in the scene and reset them
     BossButton[] buttons = Object.FindObjectsByType<BossButton>(FindObjectsSortMode.None);
     foreach(var button in buttons) button.ResetButton();
     }
@@ -48,13 +47,11 @@ public class ArenaManager : MonoBehaviour
         {
             laserObject.SetActive(true);
             
-            // 1. Play the one-time activation sound
             if (audioSource != null && activationSound != null)
             {
                 audioSource.PlayOneShot(activationSound);
             }
 
-            // 2. Start the constant looping sound on the laser itself
             AudioSource laserLoop = laserObject.GetComponent<AudioSource>();
             if (laserLoop != null)
             {
