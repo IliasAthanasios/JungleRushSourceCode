@@ -19,7 +19,6 @@ public class PauseMenuController : MonoBehaviour
 
     void Start()
     {
-        // Ensure the menu is hidden and the game is running when we start
         Resume();
     }
 
@@ -49,7 +48,6 @@ public class PauseMenuController : MonoBehaviour
 
     public void TogglePause()
     {
-        // If we are in the settings panel, ESC should probably take us back to the pause menu first
         if (settingsPanel.activeSelf)
         {
             BackToPauseMenu();
@@ -64,11 +62,10 @@ public class PauseMenuController : MonoBehaviour
     public void Pause()
     {
         isPaused = true;
-        Time.timeScale = 0f; // Freeze time
+        Time.timeScale = 0f; 
         pausePanel.SetActive(true);
         settingsPanel.SetActive(false);
         
-        // Unlock cursor so we can click buttons
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
@@ -76,11 +73,10 @@ public class PauseMenuController : MonoBehaviour
     public void Resume()
     {
         isPaused = false;
-        Time.timeScale = 1f; // Unfreeze time
+        Time.timeScale = 1f; 
         pausePanel.SetActive(false);
         settingsPanel.SetActive(false);
         
-        // Relock cursor for gameplay
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -99,7 +95,7 @@ public class PauseMenuController : MonoBehaviour
 
     public void QuitToMainMenu()
     {
-        Time.timeScale = 1f; // Reset time!
+        Time.timeScale = 1f; 
         MainMenuController.showCreditsOnLoad = false;
         SceneManager.LoadScene("MainMenu");
     }
