@@ -25,7 +25,6 @@ public class TutorialManager : MonoBehaviour
         tutorialText.text = message;
         tutorialPanel.SetActive(true);
 
-        // Stop any existing timer so they don't overlap
         if (hideCoroutine != null) StopCoroutine(hideCoroutine);
         hideCoroutine = StartCoroutine(HideAfterDelay(duration));
     }
