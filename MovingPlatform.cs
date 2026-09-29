@@ -14,7 +14,6 @@ public class MovingPlatform : MonoBehaviour
     private Rigidbody rb;
     private Vector3 previousPosition;
 
-    // Track players/objects on the platform
     private List<CharacterController> riders = new List<CharacterController>();
 
     void Start()
@@ -37,20 +36,17 @@ public class MovingPlatform : MonoBehaviour
         if (timer > 0)
         {
             timer -= Time.fixedDeltaTime;
-            previousPosition = rb.position; // Keep updated even when waiting
+            previousPosition = rb.position; 
             return;
         }
 
         Transform target = waypoints[currentWaypointIndex];
         Vector3 newPos = Vector3.MoveTowards(rb.position, target.position, speed * Time.fixedDeltaTime);
         
-        // Calculate how much the platform moved this frame
         Vector3 platformDelta = newPos - rb.position;
 
-        // Move the platform
         rb.MovePosition(newPos);
 
-        // Move every CharacterController standing on the platform by the same delta
         foreach (var rider in riders)
         {
             if (rider != null && rider.enabled)
