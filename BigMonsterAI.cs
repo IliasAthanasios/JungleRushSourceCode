@@ -138,12 +138,10 @@ public class BigMonsterAI : MonoBehaviour
         }
     }
 
-    // Satisfaction for CrashPlayerController.cs
     public void OnHit()
     {
         if (isDead || !isStunned) return;
 
-        // Optional: If the player hits the boss while stunned, we could do damage here too
         if (hitBossEffect != null) Instantiate(hitBossEffect, transform.position + Vector3.up, Quaternion.identity);
         if (crySound != null) audioSource.PlayOneShot(crySound);
     }
