@@ -48,7 +48,6 @@ public class UltimateTitleAnimator : MonoBehaviour
 
         if (characterCount == 0) return;
 
-        // Initialize or update status array
         if (charStatuses == null || charStatuses.Length != characterCount)
         {
             charStatuses = new CharStatus[characterCount];
@@ -66,7 +65,6 @@ public class UltimateTitleAnimator : MonoBehaviour
         {
             if (!textInfo.characterInfo[i].isVisible) continue;
 
-            // --- 1. Logic: Handle Random Jitter (Shake) State ---
             if (useShake)
             {
                 charStatuses[i].timer -= Time.deltaTime;
@@ -85,7 +83,6 @@ public class UltimateTitleAnimator : MonoBehaviour
 
             Vector3 offsetToMidBaseline = new Vector2((vertices[vertexIndex + 0] + vertices[vertexIndex + 2]).x / 2, textInfo.characterInfo[i].baseLine);
 
-            // --- 2. Warp Calculation (Constant) ---
             float x0 = (offsetToMidBaseline.x - boundsMinX) / (boundsMaxX - boundsMinX);
             float x1 = x0 + 0.0001f;
             float y0 = useWarp ? VertexCurve.Evaluate(x0) * curveScale : 0;
@@ -93,11 +90,9 @@ public class UltimateTitleAnimator : MonoBehaviour
             float angle = useWarp ? Mathf.Atan2(y1 - y0, (x1 - x0) * (boundsMaxX - boundsMinX)) * Mathf.Rad2Deg : 0;
             Matrix4x4 matrix = Matrix4x4.TRS(new Vector3(0, y0, 0), Quaternion.Euler(0, 0, angle), Vector3.one);
 
-            // --- 3. Wavy Calculation (Constant) ---
             float wavyY = useWavy ? Mathf.Sin(Time.time * wavySpeed + i * wavyCurveScale) * wavyAmount : 0;
             Vector3 wavyOffset = new Vector3(0, wavyY, 0);
 
-            // --- 4. Shake Calculation (Random) ---
             Vector3 shakeOffset = Vector3.zero;
             if (charStatuses[i].isShaking)
             {
@@ -107,7 +102,6 @@ public class UltimateTitleAnimator : MonoBehaviour
                     0) * Mathf.Sin(Time.time * shakeSpeed);
             }
 
-            // Apply all transformations
             for (int j = 0; j < 4; j++)
             {
                 Vector3 vert = vertices[vertexIndex + j] - offsetToMidBaseline;
@@ -116,7 +110,6 @@ public class UltimateTitleAnimator : MonoBehaviour
             }
         }
 
-        // Push all changes back to the text mesh
         for (int i = 0; i < textInfo.meshInfo.Length; i++)
         {
             textInfo.meshInfo[i].mesh.vertices = textInfo.meshInfo[i].vertices;
