@@ -31,7 +31,7 @@ public class SFXManager : MonoBehaviour
         AudioSource audioSource = tempGO.AddComponent<AudioSource>();
         audioSource.clip = clip;
         audioSource.volume = volume;
-        audioSource.spatialBlend = 1.0f; // 3D sound
+        audioSource.spatialBlend = 1.0f; 
         audioSource.outputAudioMixerGroup = sfxGroup;
         audioSource.Play();
 
