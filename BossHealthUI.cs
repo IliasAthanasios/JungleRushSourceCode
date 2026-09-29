@@ -23,13 +23,13 @@ public class BossHealthUI : MonoBehaviour
         gameObject.SetActive(true);
         healthSlider.maxValue = maxHealth;
         StopAllCoroutines();
-        StartCoroutine(AnimateValue(0, maxHealth, 0.5f)); // 0.5s Fill up
+        StartCoroutine(AnimateValue(0, maxHealth, 0.5f)); 
     }
 
     public void UpdateHealth(float currentHealth)
     {
         StopAllCoroutines();
-        StartCoroutine(AnimateValue(healthSlider.value, currentHealth, 1.0f)); // 1.0s Drain
+        StartCoroutine(AnimateValue(healthSlider.value, currentHealth, 1.0f)); 
     }
 
     private IEnumerator AnimateValue(float start, float end, float duration)
@@ -40,7 +40,6 @@ public class BossHealthUI : MonoBehaviour
             elapsed += Time.deltaTime;
             healthSlider.value = Mathf.Lerp(start, end, elapsed / duration);
             
-            // Update the gradient colors to match the new percentage
             if (gradientEffect != null)
                 gradientEffect.Refresh(healthSlider.normalizedValue);
                 
