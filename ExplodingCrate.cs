@@ -16,7 +16,7 @@ public class ExplodingCrate : MonoBehaviour
     
     [Header("Audio Settings")]
     public AudioClip fuseSound;
-    public float fuseInterval = 8.0f; // Set to 8 seconds as requested
+    public float fuseInterval = 8.0f; 
     public float soundMaxDistance = 15f;
     [Range(0, 256)] public int soundPriority = 80;
 
@@ -28,7 +28,6 @@ public class ExplodingCrate : MonoBehaviour
     {
         originalPosition = transform.position;
         
-        // Setup AudioSource
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.playOnAwake = false;
         audioSource.spatialBlend = 1f;
@@ -36,12 +35,10 @@ public class ExplodingCrate : MonoBehaviour
         audioSource.rolloffMode = AudioRolloffMode.Linear;
         audioSource.priority = soundPriority;
 
-        // Start both independent routines
         StartCoroutine(WobbleRoutine());
         StartCoroutine(FuseSoundRoutine());
     }
 
-    // Handles ONLY the visual shaking
     private IEnumerator WobbleRoutine()
     {
         while (!hasExploded)
@@ -54,7 +51,6 @@ public class ExplodingCrate : MonoBehaviour
             while (elapsed < wobbleDuration)
             {
                 if (hasExploded) break;
-                // Wobble around the original spot
                 transform.position = originalPosition + Random.insideUnitSphere * wobbleIntensity;
                 elapsed += Time.deltaTime;
                 yield return null;
@@ -64,7 +60,6 @@ public class ExplodingCrate : MonoBehaviour
         }
     }
 
-    // Handles ONLY the ticking/fuse sound
     private IEnumerator FuseSoundRoutine()
     {
         while (!hasExploded)
@@ -74,7 +69,6 @@ public class ExplodingCrate : MonoBehaviour
                 audioSource.PlayOneShot(fuseSound);
             }
 
-            // Wait exactly 8 seconds before the next tick
             yield return new WaitForSeconds(fuseInterval);
         }
     }
@@ -92,7 +86,7 @@ public class ExplodingCrate : MonoBehaviour
         if (hasExploded) return;
         hasExploded = true;
         
-        StopAllCoroutines(); // Stop both the wobble and the fuse sound
+        StopAllCoroutines(); 
 
         if (explosionEffect != null)
         {
