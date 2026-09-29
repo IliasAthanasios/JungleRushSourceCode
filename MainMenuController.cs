@@ -39,7 +39,6 @@ public class MainMenuController : MonoBehaviour
     private List<Resolution> filteredResolutions = new List<Resolution>();
     private Coroutine transitionCoroutine;
 
-    // Keys for saving/loading settings
     private const string SENSITIVITY_KEY = "MouseSensitivity";
     private const string VOLUME_KEY = "MasterVolume";
     private const string MUSIC_KEY = "MusicVolume";
@@ -51,22 +50,19 @@ public class MainMenuController : MonoBehaviour
 
     void Start()
     {
-        // 1. Initialize Settings UI and Lists (defaults to Native monitor resolution)
         SetupResolutionDropdown();
         SetupQualityDropdown();
 
-        // 2. Load and Apply Settings
         StartCoroutine(ApplySavedSettings());
 
-        // 3. UI Initial State
         if (showCreditsOnLoad)
         {
-            showCreditsOnLoad = false; // Reset immediately so it doesn't repeat
+            showCreditsOnLoad = false; 
             ShowCredits();
         }
         else
         {
-            showCreditsOnLoad = false; // Force reset just in case
+            showCreditsOnLoad = false; 
             if (mainPanel != null) ShowMainPanel();
         }
         
@@ -77,10 +73,8 @@ public class MainMenuController : MonoBehaviour
 
     private IEnumerator ApplySavedSettings()
     {
-        // Wait one frame to allow display subsystem to initialize
         yield return null;
 
-        // --- Audio ---
         float savedMaster = PlayerPrefs.GetFloat(VOLUME_KEY, 0.75f);
         float savedMusic = PlayerPrefs.GetFloat(MUSIC_KEY, 0.75f);
         float savedSFX = PlayerPrefs.GetFloat(SFX_KEY, 0.75f);
@@ -93,7 +87,6 @@ public class MainMenuController : MonoBehaviour
         SetMusicVolume(savedMusic);
         SetSFXVolume(savedSFX);
 
-        // --- Quality & Sensitivity ---
         int savedQuality = PlayerPrefs.GetInt(QUALITY_KEY, QualitySettings.GetQualityLevel());
         float savedSens = PlayerPrefs.GetFloat(SENSITIVITY_KEY, 0.2f);
         
@@ -101,7 +94,6 @@ public class MainMenuController : MonoBehaviour
         if (sensitivitySlider) sensitivitySlider.value = savedSens;
         SetSensitivity(savedSens);
 
-        // --- Display & Resolution ---
         int nativeW = Screen.mainWindowDisplayInfo.width > 0 ? Screen.mainWindowDisplayInfo.width : Screen.currentResolution.width;
         int nativeH = Screen.mainWindowDisplayInfo.height > 0 ? Screen.mainWindowDisplayInfo.height : Screen.currentResolution.height;
         int savedW = PlayerPrefs.GetInt(RES_WIDTH_KEY, nativeW);
@@ -115,7 +107,6 @@ public class MainMenuController : MonoBehaviour
 
         ApplyDisplayMode(savedW, savedH, isFS);
 
-        // --- Input Rebinds ---
         string savedRebinds = PlayerPrefs.GetString("InputRebinds");
         if (!string.IsNullOrEmpty(savedRebinds))
         {
@@ -127,13 +118,10 @@ public class MainMenuController : MonoBehaviour
     {
             if (fullscreen)
         {
-            // Force borderless fullscreen at the CURRENT desktop resolution.
-            // Do NOT call SetResolution here - it conflicts and cancels the switch.
             Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
         }
         else
         {
-            // Apply the chosen windowed resolution, then force windowed mode.
             Screen.SetResolution(width, height, FullScreenMode.Windowed);
             Screen.fullScreenMode = FullScreenMode.Windowed;
         }
@@ -142,51 +130,41 @@ public class MainMenuController : MonoBehaviour
     #region Navigation & Camera
     public void PlayGame()
     {
-        // Reset game data before starting
         GameManager.ResetGameData(3);
         
-        // Use the loading screen routine instead of direct SceneManager.LoadScene
         StartCoroutine(LoadSceneWithLoadingScreen("TutorialLevel"));
     }
 
     private IEnumerator LoadSceneWithLoadingScreen(string sceneName)
     {
-        // 1. Show the loading UI
         if (loadingScreen != null) 
         {
             loadingScreen.FadeIn();
         }
         
-        // Give the fade animation a moment to become fully opaque
         yield return new WaitForSeconds(0.5f);
 
-        // 2. Start loading the scene in the background
         AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName);
         
-        // Don't let the scene switch automatically until we are ready
         operation.allowSceneActivation = false;
 
         float timer = 0f;
-        float minLoadTime = 1.5f; // Ensures the screen is visible for at least 1.5 seconds
+        float minLoadTime = 1.5f; 
 
         while (timer < minLoadTime || operation.progress < 0.9f)
         {
             timer += Time.deltaTime;
             
-            // Calculate progress (0 to 1) based on the timer or the operation progress
             float progress = Mathf.Clamp01(timer / minLoadTime);
             if (loadingScreen != null) loadingScreen.SetProgress(progress);
             
             yield return null;
         }
 
-        // 3. Finalize loading
         if (loadingScreen != null) loadingScreen.SetProgress(1f);
         
-        // Short pause at 100% for visual polish
         yield return new WaitForSeconds(0.3f);
         
-        // Actually switch to the new scene
         operation.allowSceneActivation = true;
     }
 
@@ -210,8 +188,6 @@ public class MainMenuController : MonoBehaviour
         if (settingsPanel) settingsPanel.SetActive(false);
         if (creditsPanel) creditsPanel.SetActive(true);
         
-        // Optional: If you want the camera to move to a specific spot for credits
-        // if (creditsViewAnchor != null) StartTransition(creditsViewAnchor);
     }
 
     public void HideCredits()
@@ -342,8 +318,6 @@ public class MainMenuController : MonoBehaviour
         PlayerPrefs.SetInt(RES_HEIGHT_KEY, res.height);
         PlayerPrefs.Save();
 
-        // In borderless fullscreen the OS keeps desktop resolution, so only
-        // apply a custom resolution when in windowed mode.
         if (isFullscreen)
             Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
         else
@@ -370,7 +344,6 @@ public class MainMenuController : MonoBehaviour
             Screen.fullScreenMode = FullScreenMode.Windowed;
         }
 
-        // Confirms the method actually fired in the build - check Player.log
         Debug.Log($"[Settings] SetFullscreen({isFullscreen}) applied. Mode now requested: {Screen.fullScreenMode}");
     }
 
