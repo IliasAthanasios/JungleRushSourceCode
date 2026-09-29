@@ -27,7 +27,7 @@ public class SmallMonsterAI : MonoBehaviour
     [Header("Vulnerability Visuals")]
     public Renderer bossRenderer;
     public Color vulnerableColor = Color.yellow;
-    public GameObject stunEffect; // Assign a particle prefab here
+    public GameObject stunEffect; 
 
 
     private NavMeshAgent agent;
@@ -41,11 +41,9 @@ public class SmallMonsterAI : MonoBehaviour
     void Start()
     {
         currentHealth = maxHealth;
-        //if (BossHealthUI.Instance != null) BossHealthUI.Instance.Setup(maxHealth);
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
         
-        // 1. Snap to NavMesh to prevent initialization errors
         if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 2.0f, NavMesh.AllAreas))
         {
             agent.Warp(hit.position);
@@ -57,7 +55,6 @@ public class SmallMonsterAI : MonoBehaviour
         if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
         if (sfxGroup != null) audioSource.outputAudioMixerGroup = sfxGroup;
 
-        // 2. Safety check for setting isStopped
         if (agent.isOnNavMesh) agent.isStopped = true;
         anim.SetFloat("Speed", 0f);
 
@@ -94,7 +91,6 @@ public class SmallMonsterAI : MonoBehaviour
     {
         while (currentHealth > 0)
         {
-            // A. LOCATE PLAYER
             if (agent.isOnNavMesh) agent.isStopped = true;
             agent.angularSpeed = 120;
             
@@ -111,33 +107,27 @@ public class SmallMonsterAI : MonoBehaviour
                 yield return null;
             }
 
-            // B. PREPARE CHARGE
             if (chargeSound != null) audioSource.PlayOneShot(chargeSound);
             yield return new WaitForSeconds(0.3f);
 
-            // C. CHARGE PHASE (Straight line for 5 seconds)
             isInvulnerable = true;
             if (agent.isOnNavMesh) agent.isStopped = false;
             agent.speed = chargeSpeed;
-            agent.angularSpeed = 0; // LOCK ROTATION
+            agent.angularSpeed = 0; 
 
-            // Aim far ahead in the current facing direction
             Vector3 targetPosition = transform.position + transform.forward * 50f;
             agent.SetDestination(targetPosition);
 
             yield return new WaitForSeconds(chargeDuration);
 
-            // D. TIRED PHASE
             isInvulnerable = false;
             if (agent.isOnNavMesh) agent.isStopped = true;
             anim.SetTrigger("Tired");
-            //Visual Feedback
             if (bossRenderer != null) bossRenderer.material.color = vulnerableColor;
             if (stunEffect != null) stunEffect.SetActive(true);
             if (tiredSound != null) audioSource.PlayOneShot(tiredSound);
             
             yield return new WaitForSeconds(tiredTime);
-            //Reset Visuals
             if (bossRenderer != null) bossRenderer.material.color = Color.white;
             if (stunEffect != null) stunEffect.SetActive(false);
         }
