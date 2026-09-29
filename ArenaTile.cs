@@ -6,10 +6,9 @@ public class ArenaTile : MonoBehaviour
 
     public void Drop()
     {
-        if (hasDropped) return; // Prevent multiple drops
+        if (hasDropped) return; 
         hasDropped = true;
 
-        // Safely get or add Rigidbody
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb == null) rb = gameObject.AddComponent<Rigidbody>();
 
