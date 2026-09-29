@@ -41,7 +41,6 @@ public class InputRebindUI : MonoBehaviour
         if (waitingForInputOverlay != null) waitingForInputOverlay.SetActive(true);
         if (bindingDisplay != null) bindingDisplay.text = "Listening...";
 
-        // Start the interactive rebind
         rebindOperation = action.PerformInteractiveRebinding(bindingIndex)
             .WithControlsExcluding("<Pointer>/position") 
             .WithControlsExcluding("<Pointer>/delta")
@@ -62,7 +61,6 @@ public class InputRebindUI : MonoBehaviour
         action.Enable();
         UpdateUI();
 
-        // Save overrides
         string rebinds = InputSystem.actions.SaveBindingOverridesAsJson();
         PlayerPrefs.SetString("InputRebinds", rebinds);
         PlayerPrefs.Save();
@@ -77,11 +75,9 @@ public class InputRebindUI : MonoBehaviour
         
         if (bindingDisplay != null && action != null)
         {
-            // Removed the invalid 'IgnoreBindingMask' flag
             var displayString = action.GetBindingDisplayString(bindingIndex, 
                 InputBinding.DisplayStringOptions.DontUseShortDisplayNames);
 
-            // Manual cleanup to ensure LMB/RMB/MMB are shown correctly
             displayString = displayString.Replace("Left Button", "LMB");
             displayString = displayString.Replace("Right Button", "RMB");
             displayString = displayString.Replace("Middle Button", "MMB");
